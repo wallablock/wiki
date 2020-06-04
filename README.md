@@ -1,4 +1,4 @@
-Wallablock es un framework para la publicación de ofertes, de forma descentralizada y segura.
+Wallablock es un framework para la publicación de ofertas, de forma descentralizada y segura.
 
 # Arquitectura
 
