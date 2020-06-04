@@ -32,6 +32,44 @@ o por títulos parciales, por ejemplo.
 
 Todo esto nos permite que la web de Wallablock no dependa de una única entidad: cualquiera puede unirse a la red Ethereum, la red IPFS, crear una base de datos ElasticSearch y alojar el cliente web en su servidor (o incluso crear otro cliente). De hecho, también se puede elegir alojar una parte de la arquitectura y delegar el resto a terceros, según las limitaciones del proveedor.
 
+# Diseño del contrato
+
+Con tal de conseguir nuestro objetivo de un intercambio sin la intervención de terceros,
+hemos diseñado el contrato con la idea general de que ambas partes tengan siempre la misma
+cantidad económica a perder. A continuación detallamos un ejemplo de intercambio:
+
+1. Alicia crea una oferta con precio 1 Ξ (ETH, Ether; moneda utilizada en la blockchain).
+  Para ello, deposita 2 Ξ como depósito.
+2. Bob compra la oferta. Para ello, deposita 2 Ξ: 1 Ξ del precio del producto y 1 Ξ de depósito.
+3. Alicia envía el objeto.
+4. Bob confirma la recepción.
+5. Alicia recibe 3 Ξ (2 Ξ del depósito + 1 Ξ como pago);
+  Bob recibe 1 Ξ del depósito
+
+| Paso | Ethers Alicia | Ethers Bob | Objeto en manos de | Valor total Alicia | Valor total Bob |
+|------|---------------|------------|--------------------|--------------------|-----------------|
+| 1    | 2 Ξ           |            | Alicia             | 3 Ξ                |                 |
+| 2    | 2 Ξ           | 2 Ξ        | Alicia             | 3 Ξ                | 2 Ξ             |
+| 3    | 2 Ξ           | 2 Ξ        | (En tránsito)      | 2 Ξ                | 2 Ξ             |
+| 4    | 2 Ξ           | 2 Ξ        | Bob                | 2 Ξ                | 3 Ξ             |
+| 5    |               |            | Bob                |                    |                 |
+
+Finalmente, respecto al valor inicial, Alicia ha ganado 1 Ξ, y Bob ha perdido 1 Ξ.
+
+En los pasos 2 y 4 vemos que el valor no es igual, pero en el segundo paso, Alicia (pero no Bob)
+puede abortar la transacción y todo el mundo recuperaría su dinero; en el cuarto paso,
+Bob podría negarse a confirmar, pero sería contrario a su propio interés:
+perdería 2 Ξ sin beneficio alguno.
+
+## Cancelación de la transacción
+
+Para evitar problemas entre la compra y la confirmación, cuando el paquete se puede encontrar en
+tránsito, solo el vendedor puede cancelar una transacción. Si el comprador quiere cancelar,
+debe contactar con el vendedor para que éste lo haga por él. Un posible caso problemático es
+si el vendedor no quiere o no puede (ha dejado de usar la plataforma, ha perdido la clave...)
+hacerlo. El contrato no contempla este caso debido a la dificultad de diseñar una solución
+segura para ambas partes pero sin intervención de terceros, aunque sería una posible mejora.
+
 # Ejemplos de uso
 
 ## Buscar
