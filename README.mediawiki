@@ -1,4 +1,4 @@
-[[File:WallaBlockLogo.png|centre]]
+[[File:Logo.png|centre]]
 
 = ¿Qué es WallaBlock? =
 
@@ -6,7 +6,7 @@ WallaBlock es un framework para la publicación de ofertas de compra-venta de fo
 
 = Arquitectura =
 
-[[File:WallaBlockArquitectura.png|thumb|Arquitectura del proyecto]]
+[[File:Arquitectura.png|thumb|Arquitectura del proyecto]]
 
 WallaBlock se compone de diversos componentes:
 
@@ -74,43 +74,43 @@ Para evitar problemas entre la compra y la confirmación, cuando el paquete se p
 
 == Buscar ==
 
-[[File:WallaBlockBuscar.png|thumb|centre|Pantalla de búsqueda]]
+[[File:Buscar.png|thumb|centre|Pantalla de búsqueda]]
 
 La acción más habitual que realizarán los usuarios será la de buscar ofertas. Para ello, se servirán de los filtros disponibles en el menú izquierdo y del campo de búsqueda para concretar el título de la oferta deseada.
 
 == Ver oferta ==
 
-[[File:WallablockVerOferta.png|thumb|centre|Detalles de una oferta]]
+[[File:VerOferta.png|thumb|centre|Detalles de una oferta]]
 
 Para ver toda la información relativa a una oferta, es suficiente con que el usuario pinche sobre ella y se desplegará un ''pop-up''. En este, el usuario encontrará información como el título, el precio de la oferta y una breve descripción del artículo.
 
 == Comprar ==
 
-[[File:WallaBlockComprar.png|thumb|centre|Compra de una oferta, con el diálogo de MetaMask esperando autorización]]
+[[File:Comprar.png|thumb|centre|Compra de una oferta, con el diálogo de MetaMask esperando autorización]]
 
 A la hora de comprar una oferta, el usuario es redirigido a una página específica la cual se encarga de obtener la información relativa a la oferta desde la ''blockchain'', para asegurar la veracidad y fiabilidad de los datos. Antes de proceder a realizar la compra, el usuario debe introducir un correo de contacto para permitir la comunicación entre comprador y vendedor.
 
 == Publicar oferta ==
 
-[[File:WallaBlockPublicarOferta.png|thumb|centre|Publicación de una oferta, con el diálogo de MetaMask esperando confirmación]]
+[[File:PublicarOferta.png|thumb|centre|Publicación de una oferta, con el diálogo de MetaMask esperando confirmación]]
 
 El proceso de publicar una oferta en WallaBlock es muy sencillo. Para ello, es suficiente con rellenar un formulario compuesto por diversos campos obligatorios como: título, precio, categoría y país de origen, combinado con otros dos campos opcionales como son descripción e imágenes.
 
 == Ver ofertas en las que el usuario participa ==
 
-[[File:WallaBlockVerOfertasPropias.png|thumb|centre|Lista de ofertas en las que el usuario ha participado]]
+[[File:VerOfertasPropias.png|thumb|centre|Lista de ofertas en las que el usuario ha participado]]
 
 El usuario tiene la opción de ver todas las ofertas en las que este participa. Por cada oferta, el usuario puede realizar una serie de acciones en función del estado actual en el que se encuentra la oferta (esperando comprador, esperando confirmación, finalizada o cancelada) y del rol del usuario en la oferta (comprador o vendedor). Cabe mencionar que estas ofertas son obtenidas desde la ''blockchain''.
 
 == Editar oferta ==
 
-[[File:WallaBlockEditarOferta.png|thumb|centre|Edición de una oferta. MetaMask espera autorización para realizar un cambio de precio]]
+[[File:EditarOferta.png|thumb|centre|Edición de una oferta. MetaMask espera autorización para realizar un cambio de precio]]
 
 Una vez la oferta ha sido publicada, pero siempre que no haya un comprador, el vendedor tiene la opción de editar ciertos campos, como el título, el precio, el país de origen, la categoría o las imágenes. Quizá la acción más interesante es la de cambiar el precio, que se encarga de requerir los fondos necesarios en el caso de que el precio indicado sea superior al original, o de devolver los fondos correspondientes si es inferior.
 
 == Retirar fondos de una oferta ==
 
-[[File:WallaBlockRetirarFondos.png|thumb|centre|Lista de ofertas con una oferta esperando la retirada de fondos]]
+[[File:RetirarFondos.png|thumb|centre|Lista de ofertas con una oferta esperando la retirada de fondos]]
 
 Cuando una oferta ha sido finalmente confirmada por el comprador, ambas partes pueden proceder a retirar los fondos que estaban retenidos dentro del contrato. Por ende, esta acción debe ser realizada tanto por parte del vendedor como del comprador para recuperar su depósito y cobro en el caso del vendedor. Cabe destacar que el coste de esta acción es únicamente el coste del gas. Esta acción també se debe realizar cada vez que el contrato nos devuelva dinero (por ejemplo, al cancelar la oferta o cuando bajamos el precio).
 
