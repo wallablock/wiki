@@ -185,8 +185,8 @@ cancelar la oferta o cuando bajamos el precio).
 > Este documento es una conversión a MarkDown del artículo publicado en la Wiki de PTI.
 > Adjuntamos el [documento original][Original] en formato MediaWiki en este mismo repositorio.
 
-[Logo]: Logo.svg
-[Arquitectura]: Arquitectura.svg
+[Logo]: Logo.png
+[Arquitectura]: Arquitectura.png
 [Original]: Original.mediawiki
 
 [Ethereum]: https://ethereum.org/
