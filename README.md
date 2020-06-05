@@ -1,50 +1,77 @@
-Wallablock es un framework para la publicación de ofertas, de forma descentralizada y segura.
+![Logo]
+
+# ¿Qué es WallaBlock?
+
+WallaBlock es un framework para la publicación de ofertas de compra-venta de forma descentralizada
+y segura.
 
 # Arquitectura
 
 ![Arquitectura]
 
-Wallablock se compone de varios componentes, tal y como se muestra en la figura. Estos son:
+WallaBlock se compone de diversos componentes:
 
-* _Blockchain_ ([Ethereum]): Guarda los datos principales de las ofertas.
-* Almacenamiento distribuído ([IPFS]):
-  Almacena datos cuando hacerlo en la blockchain sería demasiado caro.
-  Son datos que no consideramos críticos para la validez de la oferta (imágenes y descripción detallada).
-* Base de datos ([ElasticSearch]): Ver sección [Base de datos](#base-de-datos).
-* Cliente web ([React]): Frontend que permite al usuario interactuar con el resto de componentes de forma cómoda.
+- _Blockchain_ ([Ethereum]): Guarda los datos principales de las ofertas.
+- Almacenamiento distribuído ([IPFS]): Ver sección [Almacenamiento
+  distribuído](#almacenamiento-distribuído).
+- Base de datos ([ElasticSearch]):  Ver sección [Base de datos](#base-de-datos).
+- Cliente web ([React.js]): Frontend que permite al usuario interactuar con el resto de componentes
+  de forma cómoda y, siempre que sea posible, transparente.
+
+## Almacenamiento distribuído
+
+Aunque la _blockchain_ nos ofrece garantías de disponibilidad e inmutabilidad, almacenar datos es
+caro, especialmente si se trata de datos grandes. Para algunos de los datos, como el título o el
+precio, hemos considerado que son datos críticos para la validez de la oferta. Sin embargo, otros
+datos más pesados, como las imágenes y la descripción, no necesitan esta garantía tan fuerte,
+así que hemos decidido almacenarlos en IPFS.
+
+IPFS nos ofrece una garantía de inmutabilidad, pero no de disponibilidad. Para aquellos datos en
+los que esto sea aceptable, los almacenamos en IPFS y guardamos un enlace (CID) en la cadena de
+bloques.
 
 ## Base de datos
 
-Como novedad, incorporamos una base de datos además de la cadena de bloques. Aunque podría parecer redundante,
-ambas cumplen una función crítica.
+Como novedad, incorporamos una base de datos además de la cadena de bloques. Aunque podría
+parecer redundante, ambas cumplen una función crítica.
 
-La _blockchain_ permite que varias partes puedan intercambiar información entre ellas sin necesidad de confiar
-las unas en las otras. Esto permite que dos clientes puedan interactuar con la misma oferta desde nodos independientes.
-Sin embargo, las búsquedas en la cadena de bloques son, por lo general, muy lentas.
+La _blockchain_ permite que varias partes puedan intercambiar información entre ellas sin
+necesidad de confiar las unas en las otras. Esto permite que dos clientes puedan interactuar con la
+misma oferta desde nodos independientes. Sin embargo, las búsquedas en la cadena de bloques son,
+por lo general, muy lentas, lo que empeora considerablemente la experiencia de usuario.
 
-Para paliar esta situación, incluímos una base de datos NoSQL, como es el caso de ElasticSearch, que se especializa
-en hacer búsquedas rápidamente. Esta base de datos no nos ofrece las garantías de seguridad que tenemos con la _blockchain_,
-ya que la base de datos está totalmente controlada por una única entidad; a cambio, tampoco tenemos las mismas restricciones,
-por lo que podemos permitir al usuario hacer las búsquedas a las que está acostumbrado, filtrando por categorías
-o por títulos parciales, por ejemplo.
+Para paliar esta situación, incluímos una base de datos NoSQL, como es el caso de ElasticSearch,
+que se especializa en hacer búsquedas rápidamente. Esta base de datos no nos ofrece las
+garantías de seguridad que tenemos con la _blockchain_, ya que está controlada por una única
+entidad; a cambio, tampoco tenemos las mismas restricciones, por lo que podemos permitir al usuario
+hacer las búsquedas a las que está acostumbrado, filtrando por categorías o por títulos
+parciales, por ejemplo.
+
+Para que los datos de la base de datos coincidan con los de la cadena de bloques, hemos
+desarrollado un sincronizador que mantiene la coherencia entre las dos, editando la base de datos
+como sea oportuno.
 
 ## Descentralización
 
-Todo esto nos permite que la web de Wallablock no dependa de una única entidad: cualquiera puede unirse a la red Ethereum, la red IPFS, crear una base de datos ElasticSearch y alojar el cliente web en su servidor (o incluso crear otro cliente). De hecho, también se puede elegir alojar una parte de la arquitectura y delegar el resto a terceros, según las limitaciones del proveedor.
+Todo esto nos permite que la red de WallaBlock no dependa de una única entidad: cualquiera puede
+unirse a la red Ethereum, la red IPFS, crear una base de datos ElasticSearch y alojar el cliente
+web en su servidor (o incluso crear otro cliente). De hecho, también se puede elegir alojar una
+parte de la infraestructura y delegar el resto a terceros, según las limitaciones del proveedor.
 
 # Diseño del contrato
 
-Con tal de conseguir nuestro objetivo de un intercambio sin la intervención de terceros,
-hemos diseñado el contrato con la idea general de que ambas partes tengan siempre la misma
-cantidad económica a perder. A continuación detallamos un ejemplo de intercambio:
+Con tal de conseguir nuestro objetivo de un intercambio sin la intervención de terceros, hemos
+diseñado el contrato con la idea general de que ambas partes tengan siempre la misma cantidad
+económica a perder.
 
-1. Alicia crea una oferta con precio 1 Ξ (ETH, Ether; moneda utilizada en la blockchain).
-  Para ello, deposita 2 Ξ como depósito.
+## Ejemplo de intercambio
+
+1. Alicia crea una oferta con precio 1 Ξ (Ether: Moneda utilizada en la _blockchain_). Para ello,
+  deposita 2 Ξ como depósito.
 2. Bob compra la oferta. Para ello, deposita 2 Ξ: 1 Ξ del precio del producto y 1 Ξ de depósito.
-3. Alicia envía el objeto.
-4. Bob confirma la recepción.
-5. Alicia recibe 3 Ξ (2 Ξ del depósito + 1 Ξ como pago);
-  Bob recibe 1 Ξ del depósito
+3. Alicia envía el objeto
+4. Bob confirma la recepción
+5. Alicia recibe 3 Ξ (2 Ξ del depósito + 1 Ξ como pago); Bob recibe 1 Ξ del depósito
 
 | Paso | Ethers Alicia | Ethers Bob | Objeto en manos de | Valor total Alicia | Valor total Bob |
 |------|---------------|------------|--------------------|--------------------|-----------------|
@@ -52,104 +79,117 @@ cantidad económica a perder. A continuación detallamos un ejemplo de intercamb
 | 2    | 2 Ξ           | 2 Ξ        | Alicia             | 3 Ξ                | 2 Ξ             |
 | 3    | 2 Ξ           | 2 Ξ        | (En tránsito)      | 2 Ξ                | 2 Ξ             |
 | 4    | 2 Ξ           | 2 Ξ        | Bob                | 2 Ξ                | 3 Ξ             |
-| 5    |               |            | Bob                |                    |                 |
+| 5    |               |            | Bob                |                    | 1 Ξ             |
 
-Finalmente, respecto al valor inicial, Alicia ha ganado 1 Ξ, y Bob ha perdido 1 Ξ.
+Finalmente, respecto al valor inicial, Alicia ha ganado 1 Ξ y Bob ha perdido 1 Ξ, intercambiando
+el objeto.
 
-En los pasos 2 y 4 vemos que el valor no es igual, pero en el segundo paso, Alicia (pero no Bob)
-puede abortar la transacción y todo el mundo recuperaría su dinero; en el cuarto paso,
-Bob podría negarse a confirmar, pero sería contrario a su propio interés:
-perdería 2 Ξ sin beneficio alguno.
+En los pasos 2 y 4, vemos que el valor no es igual, pero en el segundo paso, Alicia (pero no Bob)
+puede abortar la transacción y todo el mundo recuperaría su dinero; en el cuarto paso, Bob
+podría negarse a confirmar, pero sería contrario a su propio interés: perdería 1 Ξ (el
+depósito) sin beneficio alguno.
 
 ## Cancelación de la transacción
 
 Para evitar problemas entre la compra y la confirmación, cuando el paquete se puede encontrar en
-tránsito, solo el vendedor puede cancelar una transacción. Si el comprador quiere cancelar,
-debe contactar con el vendedor para que éste lo haga por él. Un posible caso problemático es
-si el vendedor no quiere o no puede (ha dejado de usar la plataforma, ha perdido la clave...)
-hacerlo. El contrato no contempla este caso debido a la dificultad de diseñar una solución
-segura para ambas partes pero sin intervención de terceros, aunque sería una posible mejora.
+tránsito, solo el vendedor puede cancelar una transacción. Si el comprador quiere cancelar, debe
+contactar con el vendedor para que este lo haga por él. Un posible caso problemático es si el
+vendedor no quiere o no puede (ha dejado de usar la plataforma, ha perdido sus credenciales...)
+hacerlo. El contrato no contempla este caso debido a la dificultad de diseñar una solución segura
+para ambas partes pero sin intervención de terceros, aunque sería una posible mejora.
 
 # Ejemplos de uso
 
 ## Buscar
 
-![Buscar]
+![Buscar](Buscar.png)
 
-La acción más habitual que realizarán los usuarios será la de buscar ofertas. Para ello,
-se servirán de los filtros disponibles en el menú izquierdo y del campo de búsqueda
-para concretar el título de la oferta deseada.
+> Pantalla de búsqueda
+
+La acción más habitual que realizarán los usuarios será la de buscar ofertas. Para ello, se
+servirán de los filtros disponibles en el menú izquierdo y del campo de búsqueda para concretar
+el título de la oferta deseada.
 
 ## Ver oferta
 
-![Ver oferta]
+![Ver oferta](VerOferta.png)
 
-Para ver toda la información relativa a una oferta, es suficiente con que el usuario
-pinche sobre ella y se desplegará un _pop-up_. En este, el usuario encontrará información
-como el título, el precio de la oferta y una breve descripción del artículo.
+> Detalles de una oferta
+
+Para ver toda la información relativa a una oferta, es suficiente con que el usuario pinche sobre
+ella y se desplegará un _pop-up_. En este, el usuario encontrará información como el título, el
+precio de la oferta y una breve descripción del artículo.
 
 ## Comprar
 
-![Comprar]
+![Comprar](Comprar.png)
 
-A la hora de comprar una oferta, el usuario es redirigido a una página específica la cual
-se encarga de obtener la información relativa a la oferta desde la _blockchain_, para
-asegurar la veracidad y fiabilidad de los datos. Antes de proceder a realizar la compra,
-el usuario debe introducir un correo de contacto para permitir la comunicación entre
-comprador y vendedor.
+> Compra de una oferta, con el diálogo de MetaMask esperando autorización
+
+A la hora de comprar una oferta, el usuario es redirigido a una página específica la cual se
+encarga de obtener la información relativa a la oferta desde la _blockchain_, para asegurar la
+veracidad y fiabilidad de los datos. Antes de proceder a realizar la compra, el usuario debe
+introducir un correo de contacto para permitir la comunicación entre comprador y vendedor.
 
 ## Publicar oferta
 
-![Publicar oferta]
+![Publicar oferta](PublicarOferta.png)
 
-El proceso de publicar una oferta en WallaBlock es muy sencillo. Para ello, es suficiente
-con rellenar un formulario compuesto por diversos campos obligatorios como: título,
-precio, categoría y país de origen, combinado con otros dos campos opcionales como
-son descripción e imágenes.
+> Publicación de una oferta, con el diálogo de MetaMask esperando confirmación
+
+El proceso de publicar una oferta en WallaBlock es muy sencillo. Para ello, es suficiente con
+rellenar un formulario compuesto por diversos campos obligatorios como: título, precio, categoría
+y país de origen, combinado con otros dos campos opcionales como son descripción e imágenes.
 
 ## Ver ofertas en las que el usuario participa
 
-![Ver ofertas en las que el usuario participa][Ver ofertas propias]
+![Ver ofertas en las que el usuario participa](VerOfertasPropias.png)
 
-El usuario tiene la opción de ver todas las ofertas en las que este participa. Por cada
-oferta, el usuario puede realizar una serie de acciones en función del estado actual en
-el que se encuentra la oferta (esperando comprador, esperando confirmación,
-finalizada o cancelada) y del rol del usuario en la oferta (comprador o vendedor). Cabe
-mencionar que estas ofertas son obtenidas desde la _blockchain_.
+> Lista de ofertas en las que el usuario ha participado
+
+El usuario tiene la opción de ver todas las ofertas en las que este participa. Por cada oferta, el
+usuario puede realizar una serie de acciones en función del estado actual en el que se encuentra
+la oferta (esperando comprador, esperando confirmación, finalizada o cancelada) y del rol del
+usuario en la oferta (comprador o vendedor). Cabe mencionar que estas ofertas son obtenidas desde
+la _blockchain_.
 
 ## Editar oferta
 
-![Editar oferta]
+![Editar oferta](EditarOferta.png)
 
-Una vez la oferta ha sido publicada, pero siempre que no haya un comprador, el
-vendedor tiene la opción de editar ciertos campos, como el título, el precio, el país de
-origen, la categoría o las imágenes. Quizá la acción más interesante es la de cambiar el
-precio, que se encarga de requerir los fondos necesarios en el caso de que el precio
-indicado sea superior al original, o de devolver los fondos correspondientes si es
-inferior.
+> Edición de una oferta. MetaMask espera autorización para realizar un cambio de precio
+
+Una vez la oferta ha sido publicada, pero siempre que no haya un comprador, el vendedor tiene la
+opción de editar ciertos campos, como el título, el precio, el país de origen, la categoría o
+las imágenes. Quizá la acción más interesante es la de cambiar el precio, que se encarga de
+requerir los fondos necesarios en el caso de que el precio indicado sea superior al original, o de
+devolver los fondos correspondientes si es inferior.
 
 ## Retirar fondos de una oferta
 
-![Retirar fondos de una oferta][Retirar fondos]
+![Retirar fondos de una oferta](RetirarFondos.png)
 
-Cuando una oferta ha sido finalmente confirmada por el comprador, ambas partes
-pueden proceder a retirar los fondos que estaban retenidos dentro del contrato. Por
-ende, esta acción debe ser realizada tanto por parte del vendedor como del comprador
-para recuperar su depósito y cobro en el caso del vendedor. Cabe destacar que el coste
-de esta acción es únicamente el coste del gas. Esta acción també se debe realizar cada
-vez que el contrato nos devuelva dinero (por ejemplo, al cancelar la oferta o cuando
-bajamos el precio).
+> Lista de ofertas con una oferta esperando la retirada de fondos
 
+Cuando una oferta ha sido finalmente confirmada por el comprador, ambas partes pueden proceder a
+retirar los fondos que estaban retenidos dentro del contrato. Por ende, esta acción debe ser
+realizada tanto por parte del vendedor como del comprador para recuperar su depósito y cobro en el
+caso del vendedor. Cabe destacar que el coste de esta acción es únicamente el coste del gas. Esta
+acción també se debe realizar cada vez que el contrato nos devuelva dinero (por ejemplo, al
+cancelar la oferta o cuando bajamos el precio).
+
+# Enlaces de interés
+
+- [Código fuente del proyecto](https://github.com/wallablock)
+
+> Este documento es una conversión a MarkDown del artículo publicado en la Wiki de PTI.
+> Adjuntamos el [documento original][Original] en formato MediaWiki en este mismo repositorio.
+
+[Logo]: Logo.svg
 [Arquitectura]: Arquitectura.svg
-[Buscar]: Buscar.png
-[Ver oferta]: VerOferta.png
-[Comprar]: Comprar.png
-[Publicar oferta]: PublicarOferta.png
-[Ver ofertas propias]: VerOfertasPropias.png
-[Editar oferta]: EditarOferta.png
-[Retirar fondos]: RetirarFondos.png
+[Original]: Original.mediawiki
 
 [Ethereum]: https://ethereum.org/
 [IPFS]: https://ipfs.io/
 [ElasticSearch]: https://www.elastic.co/
-[React]: https://reactjs.org/
+[React.js]: https://reactjs.org/
